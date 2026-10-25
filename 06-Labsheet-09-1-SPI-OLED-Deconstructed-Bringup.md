@@ -1,4 +1,4 @@
-<img width="4032" height="3024" alt="tempImagem1TT0s" src="https://github.com/user-attachments/assets/c16c2113-c989-493e-b758-f382f4841145" /># ใบงานการทดลองที่ 9.1 (Lab 9.1)
+# ใบงานการทดลองที่ 9.1 (Lab 9.1)
 ### การประกอบสร้างตัวขับจอแสดงผล SSD1306 ทีละชิ้นส่วน (Deconstructed Bring-up) สู่ Hello World และการตรวจสอบความจำภาพเชิงนิติวิทยาศาสตร์ (Framebuffer Forensics)
 
 >[!NOTE] **คำชี้แจง** 
