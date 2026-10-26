@@ -292,6 +292,7 @@ Server: Kestrel
 
 {"raw":2048,"calibrated":50.0,"unit":"%","displayMsg":"SYSTEM READY","timestamp":"2026-09-13T..."}
 ```
+<img width="798" height="245" alt="ภาพถ่ายหน้าจอ 2569-10-27 เวลา 02 16 37" src="https://github.com/user-attachments/assets/a12db60e-6df5-424d-8a0f-933ee048c8bc" />
 
 ---
 
@@ -304,6 +305,7 @@ curl.exe -i -X POST http://localhost:5117/api/potentiometer/calibrate `
   -H "Content-Type: application/json" `
   -d '{"rawMin": 200, "rawMax": 3800, "scaleMin": 0, "scaleMax": 1000, "unit": "RPM"}'
 ```
+
 
 **หรือคำสั่งด้วย PowerShell Native (`Invoke-RestMethod`)**
 ```powershell
@@ -318,6 +320,7 @@ Server: Kestrel
 
 {"status":"success","settings":{"rawMin":200,"rawMax":3800,"scaleMin":0,"scaleMax":1000,"unit":"RPM"}}
 ```
+<img width="695" height="179" alt="ภาพถ่ายหน้าจอ 2569-10-27 เวลา 02 17 41" src="https://github.com/user-attachments/assets/7b0b102f-f1b8-468e-a7ba-08f82150e363" />
 
 ---
 
@@ -343,6 +346,7 @@ Server: Kestrel
 
 {"status":"success","current":"Hello OLED"}
 ```
+<img width="682" height="149" alt="ภาพถ่ายหน้าจอ 2569-10-27 เวลา 02 18 21" src="https://github.com/user-attachments/assets/4bf55ba8-48f9-4236-9cee-d7ab2b02ead6" />
 
 ---
 
@@ -354,6 +358,7 @@ Server: Kestrel
 >   เกิดจากการใส่เครื่องหมาย Double-Quote ซ้อนกันใน PowerShell ให้แก้ไขโดยใช้ **Single-Quote `'{"message":"..."}'`** ครอบข้อความ JSON เสมอ!
 > * **เกิดข้อผิดพลาด `404 Not Found`:**  
 >   เกิดจากพิมพ์ URL ผิด เช่น พิมพ์ `/api/oled/` ตกคำว่า `message`
+
 
 ---
 
@@ -376,13 +381,22 @@ Server: Kestrel
      -d '{"message":""}'
    ```
    * **ผลที่คาดหวัง:** ได้รับ **`400 Bad Request`** แจ้งว่าข้อความต้องไม่ว่างเปล่า
+<img width="684" height="166" alt="ภาพถ่ายหน้าจอ 2569-10-27 เวลา 02 18 40" src="https://github.com/user-attachments/assets/0261e6d5-5364-4fe2-aa20-902681888136" />
 
 ---
 
 ## 5. คำถามท้ายการทดลองเพื่อการประเมินผล
 1. เหตุใดการคำนวณสเกลเซนเซอร์จึงควรทำที่ฝั่ง Kestrel Server แทนที่จะคำนวณบนไมโครคอนโทรลเลอร์ ESP32 ตั้งแต่แรก?
+  ```
+   ตอบ: เพื่อลดภาระการประมวลผลและการใช้หน่วยความจำของ ESP32 ทำให้บอร์ดทำงานได้เร็วขึ้น และช่วยเพิ่มความยืดหยุ่นเนื่องจากสามารถปรับแต่ง/เปลี่ยนสเกลการวัดผ่าน Web API ได้ทันทีโดยไม่ต้องทำการ Re-compile หรือ Re-flash เฟิร์มแวร์ใหม่ลงบอร์ด ESP32
+   ``` 
 2. จากการทำ HTTP Forensics หากไม่มีการตรวจสอบเงื่อนไข `RawMax <= RawMin` ในโค้ด จะเกิด Exception ชนิดใดขึ้นในภาษา C# และส่งผลต่อการทำงานของเซิร์ฟเวอร์อย่างไร?
+   ```
+   ตอบ: หาก RawMax == RawMin จะเกิดการหารด้วยศูนย์ ซึ่งในชนิดข้อมูล double ของ C# จะได้ผลลัพธ์เป็น NaN (Not a Number) ทำให้ตัว serialization แปลงเป็น JSON ไม่สำเร็จ เกิด Exception ภายในระบบ และเซิร์ฟเวอร์จะตอบกลับด้วยรหัส 500 Internal Server Error
+   ``` 
 3. อธิบายสาเหตุทางเทคนิคว่าทำไมคำขอ HTTP POST ที่ไม่มี Header `Content-Type: application/json` จึงถูกปฏิเสธด้วยรหัสสถานะ `415 Unsupported Media Type`?
-
+```
+ตอบ: เกิดจากตัว Kestrel Minimal API ไม่ทราบรูปแบบของข้อมูล (Media Type) ใน Request Body ที่ส่งมา ทำให้ระบบ JSON Deserializer/Input Formatter ไม่ทำงานและปฏิเสธการแปลงข้อมูล (Body Binding Failure) จึงตอบกลับด้วยรหัส 415 Unsupported Media Type ตามมาตรฐาน HTTP Protocol   
+   ``` 
 
 
